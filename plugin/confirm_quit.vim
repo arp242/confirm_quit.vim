@@ -17,8 +17,8 @@ set cpo&vim
 "##########################################################
 " Mappings
 if !(exists('g:confirm_quit_nomap') && g:confirm_quit_nomap)
-	cnoremap <silent> q<CR>  :call confirm_quit#confirm(0, 'last')<CR>
-	cnoremap <silent> wq<CR> :call confirm_quit#confirm(1, 'last')<CR>
+    cnoremap <silent> q<CR>  :call confirm_quit#confirm(0, 'last')<CR>
+    cnoremap <silent> wq<CR> :call confirm_quit#confirm(1, 'last')<CR>
 	cnoremap <silent> x<CR>  :call confirm_quit#confirm(1, 'last')<CR>
 	nnoremap <silent> ZZ     :call confirm_quit#confirm(1, 'last')<CR>
 end
@@ -64,6 +64,19 @@ fun! confirm_quit#prevent(writefile, when)
 endfun
 
 
+" Run an alternative command when quiting. The {writefile} and {when} parameters
+" work like |confirm_quit#confirm|, the {cmd} paramter is run with |execute|.
+fun! confirm_quit#command(writefile, when, cmd)
+	if a:writefile && !s:write() | return | endif
+	if a:when == 'last' && !s:going_to_quit()
+		quit
+		return
+	end
+
+	execute a:cmd
+endfun
+
+
 "##########################################################
 " Helper functions
 
@@ -78,6 +91,7 @@ fun! s:write()
 	write
 	return 1
 endfun
+
 
 " Check if we're actually going to quit Vim, rather than just closing the
 " current window
