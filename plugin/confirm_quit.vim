@@ -65,7 +65,7 @@ endfun
 
 
 " Run an alternative command when quiting. The {writefile} and {when} parameters
-" work like |confirm_quit#confirm|, the {cmd} paramter is run with |execute|.
+" work like |confirm_quit#confirm|, the {cmd} paramter is run with |:execute|.
 fun! confirm_quit#command(writefile, when, cmd)
 	if a:writefile && !s:write() | return | endif
 	if a:when == 'last' && !s:going_to_quit()

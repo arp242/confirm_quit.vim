@@ -52,8 +52,8 @@ confirm_quit#prevent({writefile}, {when})             *confirm_quit#prevent()*
 confirm_quit#command({writefile}, {when}, {cmd})      *confirm_quit#command()*
 
         Run an alternative command when quiting. The {writefile} and {when}
-        parameters work like |confirm_quit#confirm|, the {cmd} paramter is run
-        with |execute|.
+        parameters work like |confirm_quit#confirm()|, the {cmd} paramter is
+        run with |:execute|.
 
         An example:
 >
