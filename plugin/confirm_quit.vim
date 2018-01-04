@@ -10,15 +10,15 @@
 scriptencoding utf-8
 if exists('g:loaded_confirm_quit') | finish | endif
 let g:loaded_confirm_quit = 1
-let s:save_cpo = &cpo
-set cpo&vim
+let s:save_cpo = &cpoptions
+set cpoptions&vim
 
 
 "##########################################################
 " Mappings
 if !(exists('g:confirm_quit_nomap') && g:confirm_quit_nomap)
-    cnoremap <silent> q<CR>  :call confirm_quit#confirm(0, 'last')<CR>
-    cnoremap <silent> wq<CR> :call confirm_quit#confirm(1, 'last')<CR>
+	cnoremap <silent> q<CR>  :call confirm_quit#confirm(0, 'last')<CR>
+	cnoremap <silent> wq<CR> :call confirm_quit#confirm(1, 'last')<CR>
 	cnoremap <silent> x<CR>  :call confirm_quit#confirm(1, 'last')<CR>
 	nnoremap <silent> ZZ     :call confirm_quit#confirm(1, 'last')<CR>
 end
@@ -36,10 +36,12 @@ end
 "   - last: Last buffer (i.e. actually quitting)
 "   - always: Always, even when just closing a window
 fun! confirm_quit#confirm(writefile, when)
-	if a:writefile && !s:write() | return | endif
+	if a:writefile && !s:write()
+		return
+	endif
 
 	" TODO: Don't confirm for help windows, scratch buffer, etc.
-	if a:when == 'last' && !s:going_to_quit()
+	if a:when is? 'last' && !s:going_to_quit()
 		quit
 		return
 	endif
@@ -55,7 +57,7 @@ endfun
 " confirm_quit#confirm()
 fun! confirm_quit#prevent(writefile, when)
 	if a:writefile && !s:write() | return | endif
-	if a:when == 'last' && !s:going_to_quit()
+	if a:when is? 'last' && !s:going_to_quit()
 		quit
 		return
 	end
@@ -68,7 +70,7 @@ endfun
 " work like |confirm_quit#confirm|, the {cmd} paramter is run with |:execute|.
 fun! confirm_quit#command(writefile, when, cmd)
 	if a:writefile && !s:write() | return | endif
-	if a:when == 'last' && !s:going_to_quit()
+	if a:when is? 'last' && !s:going_to_quit()
 		quit
 		return
 	end
@@ -83,7 +85,7 @@ endfun
 " Write buffer to disk if modified
 fun! s:write()
 	if !&modified | return 1 | endif
-	if expand('%') == ''
+	if expand('%') is? ''
 		echohl ErrorMsg | echomsg 'E32: No file name' | echohl None
 		return 0
 	endif
@@ -97,7 +99,7 @@ endfun
 " current window
 fun! s:going_to_quit()
 	let l:open_bufs = 0
-	for buf in range(bufnr('^'), bufnr('$'))
+	for l:buf in range(bufnr('^'), bufnr('$'))
 		if bufloaded(l:buf)
 			let l:open_bufs += 1
 		endif
@@ -107,13 +109,13 @@ fun! s:going_to_quit()
 endfun
 
 
-let &cpo = s:save_cpo
+let &cpoptions = s:save_cpo
 unlet s:save_cpo
 
 
 " The MIT License (MIT)
 "
-" Copyright © 2015 Martin Tournoij
+" Copyright © 2015-2018 Martin Tournoij
 "
 " Permission is hereby granted, free of charge, to any person obtaining a copy
 " of this software and associated documentation files (the "Software"), to
