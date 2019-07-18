@@ -98,14 +98,7 @@ endfun
 " Check if we're actually going to quit Vim, rather than just closing the
 " current window
 fun! s:going_to_quit()
-	let l:open_bufs = 0
-	for l:buf in range(bufnr('^'), bufnr('$'))
-		if bufloaded(l:buf)
-			let l:open_bufs += 1
-		endif
-	endfor
-
-	return l:open_bufs == 1
+	return tabpagenr('$') is 1 && winnr('$') is 1
 endfun
 
 
