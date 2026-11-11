@@ -16,11 +16,14 @@ MAPPINGS                                               *confirm-quit-mappings*
 
 This plugin comes with the following mappings by default:
 >
-    cnoremap <silent> q<CR>  :call confirm_quit#confirm(0, 'last')<CR>
-    cnoremap <silent> wq<CR> :call confirm_quit#confirm(1, 'last')<CR>
-    cnoremap <silent> x<CR>  :call confirm_quit#confirm(1, 'last')<CR>
-    nnoremap <silent> ZZ     :call confirm_quit#confirm(1, 'last')<CR>
+    cnoremap <expr> q<CR>  <SID>confirm_quit_cr('q', 0)
+    cnoremap <expr> wq<CR> <SID>confirm_quit_cr('wq', 1)
+    cnoremap <expr> x<CR>  <SID>confirm_quit_cr('x', 1)
+    nnoremap <silent> ZZ   :call confirm_quit#confirm(1, 'last')<CR>
 <
+The command-line mappings ask for confirmation only when the command is
+exactly |:q|, |:wq|, or |:x|. A search such as |/flex| is not changed.
+
 Set |g:confirm_quit_nomap| to 1 to disable this.
 
 ==============================================================================
@@ -66,5 +69,9 @@ confirm_quit#command({writefile}, {when}, {cmd})      *confirm_quit#command()*
         This will call |:Explore| when "quitting" Vim. In this example, we
         only map |:q| and |:wq|, so the longer |:quit| will still work. |:wq|
         doesn't have a longer version, but you can use |:x| or |:exit|.
+
+        These |:cnoremap|s also match the end of a |/| or |?| prompt. Check
+        that |getcmdtype()| is ":" before replacing the command, or a search
+        ending in q, wq, or x is rewritten.
 
 vim:tw=78:ts=8:ft=help:norl:expandtab

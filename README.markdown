@@ -12,10 +12,13 @@ To use it you'll need to remap keys that "quit" Vim as there's no other way to
 prevent Vim from quitting. This plugin comes with the following mappings by
 default:
 
-    cnoremap <silent> q<CR>  :call confirm_quit#confirm(0, 'last')<CR>
-    cnoremap <silent> wq<CR> :call confirm_quit#confirm(1, 'last')<CR>
-    cnoremap <silent> x<CR>  :call confirm_quit#confirm(1, 'last')<CR>
-    nnoremap <silent> ZZ     :call confirm_quit#confirm(1, 'last')<CR>
+    cnoremap <expr> q<CR>  <SID>confirm_quit_cr('q', 0)
+    cnoremap <expr> wq<CR> <SID>confirm_quit_cr('wq', 1)
+    cnoremap <expr> x<CR>  <SID>confirm_quit_cr('x', 1)
+    nnoremap <silent> ZZ   :call confirm_quit#confirm(1, 'last')<CR>
+
+These command-line mappings apply only to `:q`, `:wq`, and `:x`. Searching
+for `flex` is not rewritten.
 
 See `:help confirm-quit` for the full documentation.
 

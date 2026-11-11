@@ -17,11 +17,30 @@ set cpoptions&vim
 "##########################################################
 " Mappings
 if !(exists('g:confirm_quit_nomap') && g:confirm_quit_nomap)
-	cnoremap <silent> q<CR>  :call confirm_quit#confirm(0, 'last')<CR>
-	cnoremap <silent> wq<CR> :call confirm_quit#confirm(1, 'last')<CR>
-	cnoremap <silent> x<CR>  :call confirm_quit#confirm(1, 'last')<CR>
+	" q<CR>, wq<CR>, and x<CR> also match the end of a / or ? prompt.
+	" Searching for "flex" would be rewritten to
+	" fle:call confirm_quit#confirm(1, 'last') and Vim would report E486.
+	" Confirm only when the Ex command is exactly q, wq, or x.
+	cnoremap <expr> q<CR>  <SID>confirm_quit_cr('q', 0)
+	cnoremap <expr> wq<CR> <SID>confirm_quit_cr('wq', 1)
+	cnoremap <expr> x<CR>  <SID>confirm_quit_cr('x', 1)
 	nnoremap <silent> ZZ     :call confirm_quit#confirm(1, 'last')<CR>
 end
+
+" The mapped keys are already removed from getcmdline() when this runs.
+fun! s:confirm_quit_cr(cmd, writefile)
+	let l:line = getcmdline()
+	if l:line !~# a:cmd . '\s*$'
+		let l:line .= a:cmd
+	endif
+	if getcmdtype() ==# ':' && l:line =~# '^\s*' . a:cmd . '\s*$'
+		return "\<C-u>call confirm_quit#confirm(" . a:writefile . ", 'last')\<CR>"
+	endif
+	if getcmdline() =~# a:cmd . '\s*$'
+		return "\<CR>"
+	endif
+	return a:cmd . "\<CR>"
+endfun
 
 
 "##########################################################
